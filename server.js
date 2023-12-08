@@ -1,0 +1,43 @@
+const net = require("net");
+const fs = require("node:fs/promises");
+const path = require("path");
+
+const server = net.createServer();
+server.listen(3000, () => {
+  console.log("Server ready to accept the request");
+});
+server.on("connection", async (socket) => {
+  socket.setMaxListeners(Infinity);
+  let filename;
+  socket.on("data", async (data) => {
+    if (!filename) {
+      if (data.toString().includes("Filename")) {
+        const firstIndex = data.toString().indexOf(":");
+        filename = data.toString().substring(firstIndex + 1);
+      }
+    }
+    if (filename) {
+      let fileWriteHandler = await fs.open(
+        path.join(__dirname, "storage", filename),
+        "w"
+      );
+      let fileWriteStream = await fileWriteHandler.createWriteStream();
+
+      if (!fileWriteStream.write(data)) {
+        socket.pause();
+      }
+
+      fileWriteStream.on("drain", () => {
+        socket.resume();
+      });
+
+      socket.on("end", () => {
+        if (fileWriteHandler) fileWriteHandler.close();
+        fileWriteHandler = undefined;
+        fileWriteStream = undefined;
+        filename = undefined;
+      });
+    }
+  });
+});
+
