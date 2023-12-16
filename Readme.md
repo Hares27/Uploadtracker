@@ -1,11 +1,10 @@
 # Uploader
 
-This application built using nodejs core library [net](https://nodejs.org/docs/latest/api/net.html) and comes with the functionalities tracking the progress of file uploaded and storing the file with respective name in server side.
+This application built using nodejs core library [net](https://nodejs.org/docs/latest/api/net.html) and comes with the functionalities tracking the progress of file uploaded and storing the file with respective name in server side. In this application client and server are communicating using [sockets](https://nodejs.org/docs/latest/api/net.html#class-netsocket) to upload file and tracking the file uploading progress.
 
 ## Requirements
 
 - [Node](https://nodejs.org/en) should be installed on you local machine
-- Knowledge on how [events](https://nodejs.org/docs/latest/api/events.html) and [sockets](https://nodejs.org/docs/latest/api/net.html#class-netsocket) work in Nodejs.
 
 ## Getting Started
 
