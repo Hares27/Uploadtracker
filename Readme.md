@@ -10,27 +10,25 @@ node
 
 To get started with this project, follow these steps:
 
-Fork this repository
+- Fork this repository
 
-Clone this repository to your local machine:
+- Clone this repository to your local machine:
 
 ```bash
 git clone  https://github.com/Hares27/Uploadtracker.git
 ```
 
-Install the required dependencies for both the server and client:
-
 ```bash
 cd uploader
 ```
 
-Start the server:
+- Start the server:
 
 ```bash
 node server
 ```
 
-Start the client:
+- Start the client:
 
 ```bash
 node client test.txt
