@@ -3,7 +3,6 @@ const net = require("net");
 const fs = require("node:fs/promises");
 const { argv } = require("node:process");
 const path = require("path");
-
 const client = net.createConnection({ port: 3000, host: "127.0.0.1" }, () => {
   console.log("Connected to server");
 });
@@ -17,13 +16,11 @@ client.on("connect", async () => {
     await writeFiletoServer();
   }
 });
-
 const getFilename = async () => {
   const filepath = argv[2];
   const filename = path.basename(filepath);
   return filename;
 };
-
 const writeFiletoServer = async () => {
   const filename = await getFilename();
   client.write(`Filename:${filename}`);
@@ -32,9 +29,7 @@ const writeFiletoServer = async () => {
     if (!client.write(chunk)) {
       filereadStream.pause();
     }
-
     await getUploadedPercentage(chunk, filesize);
-
     client.on("drain", () => {
       filereadStream.resume();
     });
@@ -45,7 +40,6 @@ const writeFiletoServer = async () => {
     client.end();
   });
 };
-
 const getFileReadStream = async (filename) => {
   const fileHandler = await fs.open(filename, "r");
   const filesize = (await fileHandler.stat()).size;
