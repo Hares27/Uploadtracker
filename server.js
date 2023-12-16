@@ -1,12 +1,10 @@
 const net = require("net");
 const fs = require("node:fs/promises");
 const path = require("path");
-
 const server = net.createServer();
 server.listen(3000, () => {
   console.log("Server ready to accept the request");
 });
-
 server.on("connection", async (socket) => {
   socket.setMaxListeners(Infinity);
   let filename, fileWriteHandler, fileWriteStream;
@@ -14,19 +12,15 @@ server.on("connection", async (socket) => {
     if (!filename) {
       filename = await getFilename(data);
     }
-
     if (filename) {
       await setFileWriteHandlerFileWriteStream();
-
       await readFileFromClient(data);
     }
   });
-
   const readFileFromClient = async (data) => {
     if (!fileWriteStream.write(data)) {
       socket.pause();
     }
-
     fileWriteStream.on("drain", () => {
       socket.resume();
     });
@@ -38,7 +32,6 @@ server.on("connection", async (socket) => {
     );
     fileWriteStream = await fileWriteHandler.createWriteStream();
   };
-
   socket.on("end", () => {
     if (fileWriteHandler) fileWriteHandler.close();
     fileWriteHandler = undefined;
@@ -46,7 +39,6 @@ server.on("connection", async (socket) => {
     filename = undefined;
   });
 });
-
 const getFilename = async (data) => {
   if (data.toString().includes("Filename")) {
     const firstIndex = data.toString().indexOf(":");
@@ -55,5 +47,3 @@ const getFilename = async (data) => {
   }
   return undefined;
 };
-
-
