@@ -6,38 +6,54 @@ const server = net.createServer();
 server.listen(3000, () => {
   console.log("Server ready to accept the request");
 });
+
 server.on("connection", async (socket) => {
   socket.setMaxListeners(Infinity);
-  let filename;
+  let filename, fileWriteHandler, fileWriteStream;
   socket.on("data", async (data) => {
     if (!filename) {
-      if (data.toString().includes("Filename")) {
-        const firstIndex = data.toString().indexOf(":");
-        filename = data.toString().substring(firstIndex + 1);
-      }
+      filename = await getFilename(data);
     }
+
     if (filename) {
-      let fileWriteHandler = await fs.open(
-        path.join(__dirname, "storage", filename),
-        "w"
-      );
-      let fileWriteStream = await fileWriteHandler.createWriteStream();
+      await setFileWriteHandlerFileWriteStream();
 
-      if (!fileWriteStream.write(data)) {
-        socket.pause();
-      }
-
-      fileWriteStream.on("drain", () => {
-        socket.resume();
-      });
-
-      socket.on("end", () => {
-        if (fileWriteHandler) fileWriteHandler.close();
-        fileWriteHandler = undefined;
-        fileWriteStream = undefined;
-        filename = undefined;
-      });
+      await readFileFromClient(data);
     }
   });
+
+  const readFileFromClient = async (data) => {
+    if (!fileWriteStream.write(data)) {
+      socket.pause();
+    }
+
+    fileWriteStream.on("drain", () => {
+      socket.resume();
+    });
+  };
+  const setFileWriteHandlerFileWriteStream = async () => {
+    fileWriteHandler = await fs.open(
+      path.join(__dirname, "storage", filename),
+      "w"
+    );
+    fileWriteStream = await fileWriteHandler.createWriteStream();
+  };
+
+  socket.on("end", () => {
+    if (fileWriteHandler) fileWriteHandler.close();
+    fileWriteHandler = undefined;
+    fileWriteStream = undefined;
+    filename = undefined;
+  });
 });
+
+const getFilename = async (data) => {
+  if (data.toString().includes("Filename")) {
+    const firstIndex = data.toString().indexOf(":");
+    filename = data.toString().substring(firstIndex + 1);
+    return filename;
+  }
+  return undefined;
+};
+
 
