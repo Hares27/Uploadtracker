@@ -1,28 +1,33 @@
-# Project Title
+# Uploader
 
-Uploader
+This application built using nodejs core library **net** and comes with the functionalities tracking the progress of file uploaded and storing the file with respective name in server side.
 
----
-## Project description
+## Getting Started
 
-This project is about tracking the progress of file uploaded to Nodejs server which is uploaded by user and storing the file under storage folder in server side . In server side and client side I am using sockets and streams to get progress of file uploaded. To understand this project you need good understanding of events,streams and sockets.
+To get started with this project, follow these steps:
 
-## Configure app
+1. Fork this repository
 
-You should have node in your environment,node is enough for running this application.If you don't have node follow official documentation of nodejs to install.
+1. Clone this repository to your local machine:
 
-- git clone https://github.com/Hares27/Uploadtracker.git
-- cd uploader
+```bash
+git clone  https://github.com/Hares27/Uploadtracker.git
+```
 
+2. Install the required dependencies for both the server and client:
 
-## Running the project
+```bash
+cd uploader
+```
 
-  open the terminal 
+3. Start the server:
 
-    $ node server
+```bash
+node server
+```
 
-  open another terminal, keep the server running
+4. Start the client:
 
-    $ node client test.txt
-
-
+```bash
+node client test.txt
+```
