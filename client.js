@@ -3,24 +3,27 @@ const net = require("net");
 const fs = require("node:fs/promises");
 const { argv } = require("node:process");
 const path = require("path");
+
 const client = net.createConnection({ port: 3000, host: "127.0.0.1" }, () => {
   console.log("Connected to server");
 });
 client.setMaxListeners(Infinity);
 let dataUploaded, newPercentage, uploadedPercentage;
+
 client.on("connect", async () => {
   const filepath = argv[2];
-
   if (filepath) {
     (dataUploaded = 0), (newPercentage = 0), (uploadedPercentage = 0);
     await writeFiletoServer();
   }
 });
+
 const getFilename = async () => {
   const filepath = argv[2];
   const filename = path.basename(filepath);
   return filename;
 };
+
 const writeFiletoServer = async () => {
   const filename = await getFilename();
   client.write(`Filename:${filename}`);
@@ -40,12 +43,14 @@ const writeFiletoServer = async () => {
     client.end();
   });
 };
+
 const getFileReadStream = async (filename) => {
   const fileHandler = await fs.open(filename, "r");
   const filesize = (await fileHandler.stat()).size;
   filereadStream = fileHandler.createReadStream();
   return { filereadStream, filesize };
 };
+
 const getUploadedPercentage = async (chunk, filesize) => {
   dataUploaded += chunk.length;
   newPercentage = Math.floor((dataUploaded / filesize) * 100);
