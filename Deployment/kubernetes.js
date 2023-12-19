@@ -10,7 +10,6 @@ const deployApp = async () => {
   await createService();
 };
 
-
 const createPod = async () => {
   const pod = {
     metadata: {
